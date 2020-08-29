@@ -1,11 +1,13 @@
 require('./models/User'); // 어사인 할 필요 없다.
 require('./models/Point');
+require('./models/Cushion');
 
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const authRoute = require('./routes/authRoutes');
-const pointRoute = require('./routes/pointRoutes');
+// const pointRoute = require('./routes/pointRoutes');
+const cushionRoute = require('./routes/cushionRoutes');
 
 const requireAuth = require('./middlewares/requireAuth');
 
@@ -14,7 +16,8 @@ const app = express();
 // 순서 잘 지켜야해
 app.use(bodyParser.json());
 app.use(authRoute);
-app.use(pointRoute);
+// app.use(pointRoute);
+app.use(cushionRoute);
 
 var user_id = 'kist';
 var user_pw = 'kistWRLimrc';
