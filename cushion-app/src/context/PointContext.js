@@ -19,43 +19,22 @@ const pointReducer = (state, action) => {
   }
 };
 
-const getCurrentPoints = dispatch => async () => {
-  try {
-    const response = await CushionApi.get('/currentPoints');
-    // response = [{},{}, ...] // 16개 점 이 담긴 배열
-    const points = [];
-    response.data.map(({ point: { pressure, coord } }) => {
-      points.push({ pressure, coord });
-    });
-
-    dispatch({ type: 'get_current_points', payload: points });
-  } catch (err) {
-    console.log(err);
-    dispatch({
-      type: 'post_error',
-      payload: err
-    });
-  }
-};
-
 const getCurrentPressure = dispatch => async ({ cushionId }) => {
   try {
     const response = await CushionApi.get(`/currentPressure/${cushionId}`);
 
     // response = [{},{}, ...] // 16개 점 이 담긴 배열
     const points = [];
-    response.data.map(({ pressure, coord }) => {
-      // 받아온 pressure 가 사실은 전류값이어ㅓㅆ다는걸....
-
-      const current = pressure > CURRENT_MAX ? CURRENT_MAX : pressure;
+    response.data.map(({ current, coord }) => {
+      current = current > CURRENT_MAX ? CURRENT_MAX : current;
       current = current < CURRENT_MIN ? CURRENT_MIN : current;
 
-      const ratio =
+      const pressure =
         ((CURRENT_MAX - CURRENT_MIN - current) / (CURRENT_MAX - CURRENT_MIN)) *
           (1 - 0.1) +
         0.1;
 
-      points.push({ pressure: ratio, coord });
+      points.push({ pressure, coord });
     });
 
     dispatch({ type: 'get_current_Pressure', payload: points });
