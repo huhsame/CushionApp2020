@@ -19,10 +19,11 @@ const pointReducer = (state, action) => {
   }
 };
 
-const getCurrentPressure = dispatch => async ({ cushionId }) => {
+const getCurrentPressure = dispatch => async cushionId => {
   try {
-    const response = await CushionApi.get(`/currentPressure/${cushionId}`);
-
+    // console.log(cushionId);
+    const response = await CushionApi.get('/currentPressure/' + cushionId);
+    console.log(response.data);
     // response = [{},{}, ...] // 16개 점 이 담긴 배열
     const points = [];
     response.data.map(({ current, coord }) => {
@@ -80,7 +81,7 @@ const postPoints = dispatch => () => {
 // provider는 app.js 파일에서 쓰인다.
 export const { Provider, Context } = createDataContext(
   pointReducer,
-  { getCurrentPoints, postPoints, getCurrentPressure },
+  { getCurrentPressure },
   { points: [], errorMessage: '' }
 );
 
