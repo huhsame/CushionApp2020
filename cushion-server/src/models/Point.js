@@ -5,7 +5,8 @@ const pointSchema = new mongoose.Schema({
     x: Number, // 0~5
     y: Number // 0~5
   },
-  pressure: {
+  current: {
+    // current 였군.. ㅋㅋㅋㅋㅋㅋ  500 ~ 3000
     type: Number,
     default: 0
   }
