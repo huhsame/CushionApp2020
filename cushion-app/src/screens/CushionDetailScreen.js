@@ -22,7 +22,8 @@ const PAGES = [
   { key: 3, title: 'UP & DOWN' }
 ];
 
-const CushionDetailScreen = () => {
+const CushionDetailScreen = ({ navigation }) => {
+  const cushionId = navigation.getParam('cushionId');
   const { state, getCurrentPressure } = useContext(PointContext);
 
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -32,7 +33,10 @@ const CushionDetailScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button onPress={getCurrentPressure} title="getCurrentData" />
+      <Button
+        onPress={() => getCurrentPressure(cushionId)}
+        title="getCurrentData"
+      />
       <View style={styles.visualizationContainer}>
         <View style={styles.scrollContainer}>
           <ScrollView

@@ -1,8 +1,8 @@
 import createDataContext from './createDataContext';
 import CushionApi from '../api/cushion-server';
 
-const PRESSURE_MAX = 7000;
-const PRESSURE_MIN = 200;
+const CURRENT_MAX = 3000;
+const CURRENT_MIN = 500;
 
 const pointReducer = (state, action) => {
   switch (action.type) {
@@ -38,18 +38,22 @@ const getCurrentPoints = dispatch => async () => {
   }
 };
 
-const getCurrentPressure = dispatch => async () => {
+const getCurrentPressure = dispatch => async ({ cushionId }) => {
   try {
-    const response = await CushionApi.get('/currentPressure/1');
+    const response = await CushionApi.get(`/currentPressure/${cushionId}`);
 
     // response = [{},{}, ...] // 16개 점 이 담긴 배열
     const points = [];
     response.data.map(({ pressure, coord }) => {
-      pressure = pressure > PRESSURE_MAX ? PRESSURE_MAX : pressure;
-      pressure = pressure < PRESSURE_MIN ? PRESSURE_MIN : pressure;
+      // 받아온 pressure 가 사실은 전류값이어ㅓㅆ다는걸....
+
+      const current = pressure > CURRENT_MAX ? CURRENT_MAX : pressure;
+      current = current < CURRENT_MIN ? CURRENT_MIN : current;
 
       const ratio =
-        (pressure / (PRESSURE_MAX - PRESSURE_MIN)) * (1 - 0.1) + 0.1;
+        ((CURRENT_MAX - CURRENT_MIN - current) / (CURRENT_MAX - CURRENT_MIN)) *
+          (1 - 0.1) +
+        0.1;
 
       points.push({ pressure: ratio, coord });
     });
