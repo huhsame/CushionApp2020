@@ -20,13 +20,11 @@ const getPoints = () => {
 };
 
 router.get('/currentPressure/:cushionId', async (req, res) => {
-  const id = req.params.cushionId;
-  console.log('[get] currentPressure: ' + id);
+  const cushionId = req.params.cushionId;
 
   try {
-    const cushion = await Cushion.findOne({ id })
-      .sort({ _id: -1 })
-      .limit(1);
+    // find로 찾으면 배열로 받고 findOne으로 부르면 딱 그 항목만.
+    const cushion = await Cushion.findOne({ cushionId }).sort({ _id: -1 });
 
     res.send(cushion.points);
   } catch (err) {
