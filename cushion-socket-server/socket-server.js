@@ -47,7 +47,7 @@ const server = net.createServer(function(socket) {
     }
 
     const cushion = new Cushion({
-      cushioId: cushionId,
+      cushionId: cushionId,
       time: cushionTime,
       points: points
     });
