@@ -23,7 +23,7 @@ const PAGES = [
 ];
 
 const CushionDetailScreen = () => {
-  const { state, getCurrentPoints, postPoints } = useContext(PointContext);
+  const { state, getCurrentPressure } = useContext(PointContext);
 
   const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -32,8 +32,7 @@ const CushionDetailScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button onPress={postPoints} title="createData" />
-      <Button onPress={getCurrentPoints} title="getCurrentData" />
+      <Button onPress={getCurrentPressure} title="getCurrentData" />
       <View style={styles.visualizationContainer}>
         <View style={styles.scrollContainer}>
           <ScrollView
