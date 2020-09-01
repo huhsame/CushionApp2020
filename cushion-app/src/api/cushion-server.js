@@ -1,10 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-const instance = axios.create({
+const CushionApi = axios.create({
   baseURL: 'http://178.128.79.153:3000'
 });
 
-instance.interceptors.request.use(
+CushionApi.interceptors.request.use(
   async config => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
@@ -17,4 +17,4 @@ instance.interceptors.request.use(
   }
 );
 
-export default instance;
+export default CushionApi;
