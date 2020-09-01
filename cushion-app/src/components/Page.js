@@ -15,7 +15,7 @@ const ITEM_RATIO = 1; // 임시값. 밑에서 함수로 처리해줘야함. // 0
 
 // 실시간으로 받아오려면 소켓으로 해야하는건가 ?
 
-const Page = ({ key, title, points }) => {
+const Page = ({ id, title, points }) => {
   const { width: windowWidth } = useWindowDimensions();
   console.log(points);
   return (
@@ -24,13 +24,13 @@ const Page = ({ key, title, points }) => {
         { width: windowWidth, height: windowWidth - 30 },
         styles.pageContainer
       ]}
-      key={key}
+      id={id}
     >
       <Text style={styles.pageText}> {title} </Text>
       <View style={styles.graphContainer}>
         {points.map((point, index) => {
           return (
-            <View style={styles.itemContainer}>
+            <View key={index} style={styles.itemContainer}>
               <View
                 style={[
                   styles.item,

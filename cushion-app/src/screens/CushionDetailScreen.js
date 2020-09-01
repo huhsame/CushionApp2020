@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 
 import {
   SafeAreaView,
@@ -8,6 +8,8 @@ import {
   Animated,
   useWindowDimensions
 } from 'react-native';
+
+import { NavigationEvents } from 'react-navigation';
 import { Text, Button } from 'react-native-elements';
 import { Context as PointContext } from '../context/PointContext';
 
@@ -24,19 +26,23 @@ const PAGES = [
 
 const CushionDetailScreen = ({ navigation }) => {
   const cushionId = navigation.getParam('cushionId');
-  const { state, getCurrentPressure } = useContext(PointContext);
+  const { state, getCurrentPressure, startGetingCurrentPressure } = useContext(
+    PointContext
+  );
 
   const scrollX = useRef(new Animated.Value(0)).current;
-
-  const { width: windowWidth } = useWindowDimensions();
-  // 이 훅은 꼭 함수 내부에서 사용해야한다. 바깥에서 사용할 수 없음.
+  const { width: windowWidth } = useWindowDimensions(); // 이 훅은 꼭 함수 내부에서 사용해야한다. 바깥에서 사용할 수 없음.
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button
+      <NavigationEvents
+        onDidFocus={() => startGetingCurrentPressure(cushionId)}
+      />
+
+      {/* <Button
         onPress={() => getCurrentPressure(cushionId)}
         title="getCurrentData"
-      />
+      /> */}
       <View style={styles.visualizationContainer}>
         <View style={styles.scrollContainer}>
           <ScrollView
@@ -59,7 +65,12 @@ const CushionDetailScreen = ({ navigation }) => {
             scrollEventThrottle={1}
           >
             {PAGES.map(page => (
-              <Page key={page.key} title={page.title} points={state.points} />
+              <Page
+                key={page.key}
+                id={page.key}
+                title={page.title}
+                points={state.points}
+              />
             ))}
           </ScrollView>
         </View>

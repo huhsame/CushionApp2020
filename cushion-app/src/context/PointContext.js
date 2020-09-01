@@ -1,6 +1,7 @@
 import createDataContext from './createDataContext';
 import CushionApi from '../api/cushion-server';
 
+const port = 11356;
 const CURRENT_MAX = 3000;
 const CURRENT_MIN = 500;
 
@@ -17,6 +18,45 @@ const pointReducer = (state, action) => {
     default:
       return state;
   }
+};
+
+const startGetingCurrentPressure = dispatch => async cushionId => {
+  // 2초 간격으로 메시지를 보여줌
+  console.log('Started geting current pressure');
+
+  const timer = setInterval(async () => {
+    try {
+      const response = await CushionApi.get('/currentPressure/' + cushionId);
+
+      // response = [{},{}, ...] // 16개 점 이 담긴 배열
+      const points = [];
+      response.data.map(({ current, coord }) => {
+        current = current > CURRENT_MAX ? CURRENT_MAX : current;
+        current = current < CURRENT_MIN ? CURRENT_MIN : current;
+
+        const pressure =
+          ((CURRENT_MAX - CURRENT_MIN - current) /
+            (CURRENT_MAX - CURRENT_MIN)) *
+            (1 - 0.1) +
+          0.1;
+
+        points.push({ pressure, coord });
+      });
+
+      dispatch({ type: 'get_current_Pressure', payload: points });
+    } catch (err) {
+      console.log(err);
+      dispatch({
+        type: 'post_error',
+        payload: err
+      });
+    }
+  }, 1000);
+
+  setTimeout(() => {
+    clearInterval(timer);
+    console.log('Finised geting current pressure');
+  }, 10000);
 };
 
 const getCurrentPressure = dispatch => async cushionId => {
@@ -81,7 +121,7 @@ const postPoints = dispatch => () => {
 // provider는 app.js 파일에서 쓰인다.
 export const { Provider, Context } = createDataContext(
   pointReducer,
-  { getCurrentPressure },
+  { getCurrentPressure, startGetingCurrentPressure },
   { points: [], errorMessage: '' }
 );
 
