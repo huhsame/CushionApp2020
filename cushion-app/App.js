@@ -7,6 +7,13 @@ import CushionDetailScreen from './src/screens/CushionDetailScreen';
 import ClientListScreen from './src/screens/ClientListScreen';
 import CreateClientScreen from './src/screens/CreateClientScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import ClientScreen from './src/screens/ClientScreen';
+import CushionRealtimeScreen from './src/screens/CushionRealtimeScreen';
+import CushionHourScreen from './src/screens/CushionHourScreen';
+import MattRealtimeScreen from './src/screens/MattRealtimeScreen';
+import MattHourScreen from './src/screens/MattHourScreen';
+import ClientLogScreen from './src/screens/ClientLogScreen';
+import EditClientScreen from './src/screens/EditClientScreen';
 
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { Provider as PressureProvider } from './src/context/PressureContext';
@@ -18,6 +25,7 @@ import { setNavigator } from './src/navigationRef';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+// import { createTabNavigator } from 'react-navigation-tabs';
 
 const switchNavigator = createSwitchNavigator({
   ResolveAuth: ResolveAuthScreen, // 맨위에 있는게 디폴트 화면
@@ -25,19 +33,39 @@ const switchNavigator = createSwitchNavigator({
     Signup: SignupScreen,
     Signin: SigninScreen
   }),
-  mainFlow: createBottomTabNavigator({
-    cushionListFlow: createStackNavigator(
-      {
-        ClientList: ClientListScreen,
-        CreateClient: CreateClientScreen,
-        CushionDetail: CushionDetailScreen
-      },
-      {
-        initialRouteName: 'ClientList'
-      }
-    ),
+
+  mainFlow: createStackNavigator({
+    ClientList: ClientListScreen,
+    CreateClient: CreateClientScreen,
+    clientFlow: createStackNavigator({
+      Client: ClientScreen,
+      cushionFlow: createBottomTabNavigator({
+        cushionRealtime: CushionRealtimeScreen,
+        cushionHour: CushionHourScreen
+      }),
+      mattFlow: createBottomTabNavigator({
+        mattRealtime: MattRealtimeScreen,
+        mattHour: MattHourScreen
+      }),
+      Log: ClientLogScreen,
+      editClient: EditClientScreen
+    }),
     Account: AccountScreen
   })
+
+  // mainFlow: createBottomTabNavigator({
+  //   cushionListFlow: createStackNavigator(
+  //     {
+  //       ClientList: ClientListScreen,
+  //       CreateClient: CreateClientScreen,
+  //       CushionDetail: CushionDetailScreen
+  //     },
+  //     {
+  //       initialRouteName: 'ClientList'
+  //     }
+  //   ),
+  //   Account: AccountScreen
+  // })
 });
 
 const App = createAppContainer(switchNavigator);

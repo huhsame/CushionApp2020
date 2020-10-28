@@ -34,7 +34,7 @@ const ClientListScreen = ({ navigation }) => {
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('CushionDetail', {
+          navigation.navigate('Client', {
             cushionId: item.cushion,
             username: AuthState.name
           })
