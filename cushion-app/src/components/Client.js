@@ -2,23 +2,17 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ListItem, Avatar, Text } from 'react-native-elements';
 
-const CushionUser = ({
-  cushionId,
-  cushionUserId,
-  name,
-  avatarUrl,
-  age,
-  sex,
-  latestLog
-}) => {
+const Client = ({ _id, cushion, name, avatarUrl, age, sex, latestLog }) => {
   return (
     <ListItem bottomDivider>
       <Avatar source={{ uri: avatarUrl }} />
       <ListItem.Content>
-        <ListItem.Title>{name}</ListItem.Title>
+        <ListItem.Title>
+          {name} - {cushion}번 쿠션
+        </ListItem.Title>
         <View style={styles.infoContainer}>
           <Text style={styles.info}>{age} </Text>
-          <Text style={styles.info}>{sex} </Text>
+          <Text style={styles.info}>{sex ? '여자' : '남자'} </Text>
         </View>
         <Text>{latestLog}</Text>
       </ListItem.Content>
@@ -36,4 +30,4 @@ const styles = StyleSheet.create({
   info: { color: 'grey' }
 });
 
-export default CushionUser;
+export default Client;

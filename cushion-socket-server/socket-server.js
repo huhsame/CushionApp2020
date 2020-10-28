@@ -1,11 +1,27 @@
-require('./models/Point');
-require('./models/Cushion');
+require('./models/Current');
 
 const net = require('net');
+require('./models/Current');
+require('./models/Cushion');
+require('./models/User');
+require('./models/Client');
+require('./models/Log');
+require('./models/Beacon');
+
+const events = require('events');
+
 const mongoose = require('mongoose');
-const Cushion = mongoose.model('Cushion');
+const CushionSchema = mongoose.model('Cushion');
+const LogSchema = mongoose.model('Log');
+const CurrentSchema = mongoose.model('Current');
+const UserSchema = mongoose.model('User');
+const ClientSchema = mongoose.model('Client');
+const BeaconSchema = mongoose.model('Beacon');
+
+// const io = require('socket.io')(); // 뒤에 (); 해줘야 인스턴스 생성
 
 const port = 11356;
+// const port_socket = 11334;
 
 const user_id = 'kist';
 const user_pw = 'kistWRLimrc';
@@ -20,6 +36,8 @@ mongoose.connect(mongoUri, {
   useUnifiedTopology: true
 });
 
+let eventEmitter = new events.EventEmitter();
+
 const server = net.createServer(function(socket) {
   socket.on('data', data => {
     let stringLine = String(data);
@@ -27,40 +45,89 @@ const server = net.createServer(function(socket) {
     let unixTime = Number(splitLines[0]);
 
     let cushionTime = new Date(unixTime * 1000);
-    let cushionId = Number(splitLines[1]);
+    let cushionNumber = Number(splitLines[1]);
 
-    let currents = [];
-    for (let i = 2; i < 37; i++) {
-      currents.push(Number(splitLines[i]));
-    }
-    let v37 = splitLines[37].replace('\u0000', '');
-    currents.push(Number(v37));
+    let values = [];
+    //console.log(splitLines.length);
+    //console.log(splitLines[436]);
+    //console.log(splitLines[437]);
 
-    const points = [];
-    for (let i = 0; i < 6; i++) {
-      for (let j = 0; j < 6; j++) {
-        points.push({
-          coord: { x: i, y: j },
-          current: currents[i * 6 + j]
-        });
+    console.log('Data_length : ' + splitLines.length);
+
+    if (cushionNumber > 1000) {
+      for (let i = 2; i < 436; i++) {
+        values.push(Number(splitLines[i]));
       }
-    }
+      let v436 = splitLines[436].replace('\u0000', '');
+      values.push(Number(v436));
+    } else {
+      for (let i = 2; i < 37; i++) {
+        values.push(Number(splitLines[i]));
+      }
+      let v37 = splitLines[37].replace('\u0000', '');
+      values.push(Number(v37));
 
-    const cushion = new Cushion({
-      cushionId: cushionId,
+      if (splitLines.length > 38) {
+        // Start Beacon - If only when the data has more than 36 current data. (If it's new version of cushion that has Beacon detector)
+        // console.log("With BLE");
+        let beaconValues = [];
+        for (let i = 38; i < 42; i++) {
+          beaconValues.push(Number(splitLines[i]));
+        }
+        beaconValues.push(Number(splitLines[42].replace('\u0000', '')));
+
+        const beacon = new BeaconSchema({
+          cushion: cushionNumber,
+          time: cushionTime,
+          values: beaconValues
+        });
+
+        beacon.save(function(error, data) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(data);
+          }
+        });
+      } // End Beacon
+    } // end else
+
+    const current = new CurrentSchema({
+      cushion: cushionNumber,
       time: cushionTime,
-      points: points
+      values
     });
 
-    cushion.save(function(error, data) {
+    // eventEmitter.emit('data_received', {
+    //   cushion: cushionNumber,
+    //   time: cushionTime,
+    //   values
+    // });
+
+    current.save(function(error, data) {
       if (error) {
         console.log(error);
       } else {
-        // console.log('Data Saved..');
+        // console.log(data);
+        // console.log(cushionNumber+" "+cushionTime);
       }
     });
   });
 });
+
+// io.on('connection', socket => {
+//   console.log('a monitor connected: ' + socket.id);
+//   socket.on('disconnect', () => {
+//     console.log('the monitor is disconnected');
+//   });
+
+//   eventEmitter.on('data_received', function brodcast(currentData) {
+//     socket.broadcast.emit('broadcast', currentData);
+//     console.log(JSON.stringify(currentData));
+//   });
+// });
+
+// io.listen(port, console.log('listening on ' + port_socket));
 
 server.maxConnections = 10;
 
@@ -68,7 +135,7 @@ server.on('error', function(err) {
   console.log('err' + err);
 });
 
-server.listen(port, function() {
+server.listen(port, async function() {
   console.log('listening on ' + port);
 });
 

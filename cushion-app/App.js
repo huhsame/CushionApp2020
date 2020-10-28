@@ -4,10 +4,14 @@ import AccountScreen from './src/screens/AccountScreen';
 import SigninScreen from './src/screens/SigninScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import CushionDetailScreen from './src/screens/CushionDetailScreen';
-import CushionListScreen from './src/screens/CushionListScreen';
+import ClientListScreen from './src/screens/ClientListScreen';
+import CreateClientScreen from './src/screens/CreateClientScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+
 import { Provider as AuthProvider } from './src/context/AuthContext';
-import { Provider as PointProvider } from './src/context/PointContext';
+import { Provider as PressureProvider } from './src/context/PressureContext';
+import { Provider as ClientProvider } from './src/context/ClientContext';
+import { Provider as LogProvider } from './src/context/LogContext';
 
 import { setNavigator } from './src/navigationRef';
 
@@ -22,10 +26,16 @@ const switchNavigator = createSwitchNavigator({
     Signin: SigninScreen
   }),
   mainFlow: createBottomTabNavigator({
-    cushionListFlow: createStackNavigator({
-      CushionList: CushionListScreen,
-      CushionDetail: CushionDetailScreen
-    }),
+    cushionListFlow: createStackNavigator(
+      {
+        ClientList: ClientListScreen,
+        CreateClient: CreateClientScreen,
+        CushionDetail: CushionDetailScreen
+      },
+      {
+        initialRouteName: 'ClientList'
+      }
+    ),
     Account: AccountScreen
   })
 });
@@ -34,13 +44,17 @@ const App = createAppContainer(switchNavigator);
 export default () => {
   return (
     <AuthProvider>
-      <PointProvider>
-        <App
-          ref={navigator => {
-            setNavigator(navigator);
-          }}
-        />
-      </PointProvider>
+      <ClientProvider>
+        <LogProvider>
+          <PressureProvider>
+            <App
+              ref={navigator => {
+                setNavigator(navigator);
+              }}
+            />
+          </PressureProvider>
+        </LogProvider>
+      </ClientProvider>
     </AuthProvider>
   );
 };

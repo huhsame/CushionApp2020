@@ -23,6 +23,10 @@ import Page from '../components/Page';
 
 const INDICATOR_SIZE = 10;
 
+// 애니메이션이고 뭐고 그냥 하는게 낫겠네
+// 머리 깨지겠다.
+// 한 화면에서 애니메이션으로 여러페이지 보여주는거는 컴포넌트 분리하는게 모르겠어
+
 const PAGES = [
   { key: 0, title: 'REAL TIME' },
   { key: 1, title: 'AN HOUR' },

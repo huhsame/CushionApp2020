@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon socket-server.js",
-    "monitor": "node basic_server.js"
+    "monitor": "node basic_server.js",
+    "chat": "nodemon chat-server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "mongoose": "^5.10.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "socket.io": "^2.3.0"
   }
 }

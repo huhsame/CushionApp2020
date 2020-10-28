@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', function(next) {
+  console.log('pre');
   const user = this;
   if (!user.isModified('password')) {
     return next();
@@ -38,6 +39,7 @@ userSchema.pre('save', function(next) {
         return next(err);
       }
       user.password = hash;
+      console.log(password);
       next();
     });
   });
@@ -55,6 +57,7 @@ userSchema.methods.comparePassword = function(candidatePassword) {
       if (!isMatch) {
         return reject(false);
       }
+
       resolve(true);
     });
   });

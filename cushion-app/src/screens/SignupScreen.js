@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import AuthForm from '../components/AuthForm';
 import NavLink from '../components/NavLink';
 import { NavigationEvents } from 'react-navigation';
@@ -9,10 +9,10 @@ const SignupScreen = () => {
   const { state, signup, clearErrorMessage } = useContext(AuthContext);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <NavigationEvents onWillFocus={clearErrorMessage} />
       <AuthForm
-        headerText={'Sign Up for SmartCushon'}
+        headerText={'Sign Up'}
         errorMessage={state.errorMessage}
         ButtonTitle={'Sign Up'}
         onSubmit={signup}
@@ -21,7 +21,7 @@ const SignupScreen = () => {
         routeName="Signin"
         text="Already have an account? Sign in"
       ></NavLink>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 250
+
+    marginBottom: 80
   }
 });
 

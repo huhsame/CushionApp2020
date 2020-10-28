@@ -12,7 +12,13 @@ const CushionSchema = mongoose.model('Cushion');
 const logSchema = new mongoose.Schema({
   text: { type: String, default: 'is fine' },
   createdAt: { type: Date, default: Date.now },
+
   alert: { type: Boolean, default: false },
+  // user: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: UserSchema
+  // },
+  // 레퍼 안달고 그냥 바로 때려 넣어버려
   user: {
     _id: String,
     name: String,
@@ -22,7 +28,6 @@ const logSchema = new mongoose.Schema({
     type: Number
   }
 });
-
 mongoose.model('Log', logSchema);
 
 module.exports = logSchema;
