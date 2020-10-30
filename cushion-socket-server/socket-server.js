@@ -8,7 +8,7 @@ require('./models/Client');
 require('./models/Log');
 require('./models/Beacon');
 
-const events = require('events');
+// const events = require('events');
 
 const mongoose = require('mongoose');
 const CushionSchema = mongoose.model('Cushion');
@@ -18,7 +18,7 @@ const UserSchema = mongoose.model('User');
 const ClientSchema = mongoose.model('Client');
 const BeaconSchema = mongoose.model('Beacon');
 
-// const io = require('socket.io')(); // 뒤에 (); 해줘야 인스턴스 생성
+// import io from 'socket.io-client';
 
 const port = 11356;
 // const port_socket = 11334;
@@ -36,10 +36,12 @@ mongoose.connect(mongoUri, {
   useUnifiedTopology: true
 });
 
-let eventEmitter = new events.EventEmitter();
-
 const server = net.createServer(function(socket) {
+  // console.log('connected with net');
+
   socket.on('data', data => {
+    // console.log(data);
+
     let stringLine = String(data);
     let splitLines = stringLine.split(',');
     let unixTime = Number(splitLines[0]);
@@ -48,11 +50,15 @@ const server = net.createServer(function(socket) {
     let cushionNumber = Number(splitLines[1]);
 
     let values = [];
-    //console.log(splitLines.length);
-    //console.log(splitLines[436]);
+    // console.log(splitLines.length);
+
+    if (splitLines.length !== 437) return;
+    // console.log(stringLine);
+
+    // console.log(splitLines[436]);
     //console.log(splitLines[437]);
 
-    console.log('Data_length : ' + splitLines.length);
+    // console.log('Data_length : ' + splitLines.length);
 
     if (cushionNumber > 1000) {
       for (let i = 2; i < 436; i++) {
@@ -98,11 +104,7 @@ const server = net.createServer(function(socket) {
       values
     });
 
-    // eventEmitter.emit('data_received', {
-    //   cushion: cushionNumber,
-    //   time: cushionTime,
-    //   values
-    // });
+    console.log(cushionNumber + ' ' + cushionTime + ' ' + values);
 
     current.save(function(error, data) {
       if (error) {
@@ -113,21 +115,11 @@ const server = net.createServer(function(socket) {
       }
     });
   });
+
+  // socket.on('end', function() {
+  //   console.log('클라이언트 접속 종료');
+  // });
 });
-
-// io.on('connection', socket => {
-//   console.log('a monitor connected: ' + socket.id);
-//   socket.on('disconnect', () => {
-//     console.log('the monitor is disconnected');
-//   });
-
-//   eventEmitter.on('data_received', function brodcast(currentData) {
-//     socket.broadcast.emit('broadcast', currentData);
-//     console.log(JSON.stringify(currentData));
-//   });
-// });
-
-// io.listen(port, console.log('listening on ' + port_socket));
 
 server.maxConnections = 10;
 
@@ -136,7 +128,7 @@ server.on('error', function(err) {
 });
 
 server.listen(port, async function() {
-  console.log('listening on ' + port);
+  console.log('listening on fkjghl' + port);
 });
 
 mongoose.connection.on('connected', () => {
