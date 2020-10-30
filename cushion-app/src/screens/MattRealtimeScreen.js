@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Button } from 'react-native-elements';
+import RealtimeMap from '../components/RealtimeMap';
 
-const MattRealtimeScreen = () => {
+const MattRealtimeScreen = ({ id }) => {
   return (
     <View>
-      <Text>matt realtime</Text>
+      <RealtimeMap id={id} isCushion={false} title='Matt Realtime' />
     </View>
   );
 };

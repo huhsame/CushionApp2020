@@ -2,10 +2,12 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Button } from 'react-native-elements';
 
-const CushionRealtimeScreen = () => {
+import RealtimeMap from '../components/RealtimeMap';
+
+const CushionRealtimeScreen = ({ id }) => {
   return (
     <View>
-      <Text>cushion realtime</Text>
+      <RealtimeMap id={id} isCushion={true} title='Cushion Realtime' />
     </View>
   );
 };
