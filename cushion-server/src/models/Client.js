@@ -5,7 +5,14 @@ const CushionSchema = mongoose.model('Cushion');
 const LogSchema = mongoose.model('Log');
 
 const clientSchema = new mongoose.Schema({
-  cushion: Number,
+  cushion: {
+    type: Number,
+    default: -1
+  },
+  matt: {
+    type: Number,
+    default: -1
+  },
   name: {
     type: String,
     equired: true,
