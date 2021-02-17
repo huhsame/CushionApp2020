@@ -12,7 +12,9 @@ import Spacer from './Spacer';
 const ClientForm = ({ headerText, errorMessage, ButtonTitle, onSubmit }) => {
   const [name, setName] = useState(''); // name
   const [cushion, setCushion] = useState(null); // cushion
-  const [id, setId] = useState(null); //id
+  const [matt, setMatt] = useState(null); // matt
+
+  // const [id, setId] = useState(null); //id
   const [age, setAge] = useState(null);
   const [sex, setSex] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState(
@@ -25,12 +27,18 @@ const ClientForm = ({ headerText, errorMessage, ButtonTitle, onSubmit }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Text style={styles.headerText}>
-          {headerText === 'Create'
-            ? '새 쿠션 사용자 등록'
-            : '쿠션 사용자 정보 변경'}
+          {headerText === 'Create' ? '새 사용자 등록' : '사용자 정보 변경'}
         </Text>
 
         <Spacer>
+          <Input
+            label='이름'
+            value={name}
+            onChangeText={setName}
+            autoCapitalize='none'
+            autoCorrect={false}
+          />
+
           <Input
             label='Cushion Number'
             keyboardType='numeric'
@@ -41,11 +49,13 @@ const ClientForm = ({ headerText, errorMessage, ButtonTitle, onSubmit }) => {
             autoCapitalize='none'
             autoCorrect={false}
           />
-
           <Input
-            label='이름'
-            value={name}
-            onChangeText={setName}
+            label='Matt Number'
+            keyboardType='numeric'
+            value={matt === null ? null : matt.toString()}
+            onChangeText={value =>
+              value === '' ? setMatt(null) : setMatt(parseInt(value))
+            }
             autoCapitalize='none'
             autoCorrect={false}
           />
@@ -95,7 +105,7 @@ const ClientForm = ({ headerText, errorMessage, ButtonTitle, onSubmit }) => {
             onPress={() =>
               onSubmit({
                 cushion,
-
+                matt,
                 name,
                 avatarUrl,
                 age,

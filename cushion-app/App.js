@@ -36,14 +36,14 @@ const switchNavigator = createSwitchNavigator({
 
   mainFlow: createStackNavigator({
     ClientList: ClientListScreen,
-    CreateClient: CreateClientScreen,
-    clientFlow: createStackNavigator({
+    // CreateClient: CreateClientScreen,
+    SmartCM: createStackNavigator({
       Client: ClientScreen,
-      cushionFlow: createBottomTabNavigator({
+      Cushion: createBottomTabNavigator({
         cushionRealtime: CushionRealtimeScreen,
         cushionHour: CushionHourScreen
       }),
-      mattFlow: createBottomTabNavigator({
+      Matt: createBottomTabNavigator({
         mattRealtime: MattRealtimeScreen,
         mattHour: MattHourScreen
       }),

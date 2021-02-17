@@ -12,6 +12,7 @@ const ClientReducer = (state, action) => {
       };
     case 'list':
       return { ...state, list: action.payload };
+
     default:
       return state;
   }
@@ -23,6 +24,7 @@ const clearErrorMessage = dispatch => () => {
 
 const createClient = dispatch => async ({
   cushion,
+  matt,
   name,
   avatarUrl,
   age,
@@ -32,6 +34,7 @@ const createClient = dispatch => async ({
     console.log(cushion);
     const response = await CushionApi.post('/createClient', {
       cushion,
+      matt,
       name,
       avatarUrl,
       age,
@@ -57,6 +60,7 @@ const getClientList = dispatch => async () => {
     const response = await CushionApi.get('/clientList');
 
     const clientList = response.data;
+    // { _id, cushion,matt, name, avatarUrl, age, sex }
 
     dispatch({
       type: 'list',
@@ -71,9 +75,34 @@ const getClientList = dispatch => async () => {
   }
 };
 
+const getClient = dispatch => async ({ _id }) => {
+  console.log(_id);
+
+  try {
+    const response = await CushionApi.get(`/client/${_id}`);
+
+    const client = response.data;
+
+    // { _id, cushion, matt, name, avatarUrl, age, sex }
+
+    return client;
+
+    // dispatch({
+    //   type: 'client',
+    //   payload: client
+    // });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: 'add_error',
+      payload: 'Something went wrong.'
+    });
+  }
+};
+
 export const { Provider, Context } = createDataContext(
   ClientReducer,
-  { createClient, getClientList, clearErrorMessage },
+  { createClient, getClientList, getClient, clearErrorMessage },
   {
     list: [],
     errorMessage: ''

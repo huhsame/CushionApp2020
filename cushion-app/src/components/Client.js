@@ -7,9 +7,7 @@ const Client = ({ _id, cushion, name, avatarUrl, age, sex, latestLog }) => {
     <ListItem bottomDivider>
       <Avatar source={{ uri: avatarUrl }} />
       <ListItem.Content>
-        <ListItem.Title>
-          {name} - {cushion}번 쿠션
-        </ListItem.Title>
+        <ListItem.Title>{name}</ListItem.Title>
         <View style={styles.infoContainer}>
           <Text style={styles.info}>{age} </Text>
           <Text style={styles.info}>{sex ? '여자' : '남자'} </Text>

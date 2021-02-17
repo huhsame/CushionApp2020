@@ -21,28 +21,14 @@ const ClientListScreen = ({ navigation }) => {
   const ClientState = useContext(ClientContext).state;
   const { getClientList } = useContext(ClientContext);
 
-  // useEffect(() => {
-  //   getClientList();
-
-  //   return () => console.log(client.state.list);
-  // }, []);
-
   const keyExtractor = (item, index) => index.toString();
 
   const renderItem = ({ item }) => {
     console.log(item);
     return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('Client', {
-            cushionId: item.cushion,
-            username: AuthState.name
-          })
-        }
-      >
+      <TouchableOpacity onPress={() => navigation.navigate('SmartCM', item)}>
         <Client
-          cushion={item.cushion}
-          id={item.id}
+          id={item._id}
           name={item.name}
           avatarUrl={item.avatarUrl}
           age={item.age}
