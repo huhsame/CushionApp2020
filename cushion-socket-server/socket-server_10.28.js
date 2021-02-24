@@ -39,24 +39,26 @@ mongoose.connect(mongoUri, {
 const server = net.createServer(function(socket) {
   // console.log('connected with net');
 
-  var full_data = '';
+  socket.on('data', data => {
+    // console.log(data);
 
-  socket.on('data', function(data) {
-    var buf = Buffer.from(data);
-    var data_seg = buf.toString();
-    full_data += data_seg;
-  });
-
-  socket.on('close', function() {
-    let stringLine = String(full_data);
+    let stringLine = String(data);
     let splitLines = stringLine.split(',');
     let unixTime = Number(splitLines[0]);
 
     let cushionTime = new Date(unixTime * 1000);
     let cushionNumber = Number(splitLines[1]);
-    console.log('id: ' + cushionNumber + ' length: ' + splitLines.length);
 
     let values = [];
+    // console.log(splitLines.length);
+
+    if (splitLines.length !== 437) return;
+    // console.log(stringLine);
+
+    // console.log(splitLines[436]);
+    //console.log(splitLines[437]);
+
+    // console.log('Data_length : ' + splitLines.length);
 
     if (cushionNumber > 1000) {
       for (let i = 2; i < 436; i++) {
@@ -90,19 +92,19 @@ const server = net.createServer(function(socket) {
           if (error) {
             console.log(error);
           } else {
-            //console.log(data);
+            console.log(data);
           }
         });
       } // End Beacon
     } // end else
 
     const current = new CurrentSchema({
-      idCM: cushionNumber,
+      cushion: cushionNumber,
       time: cushionTime,
       values
     });
 
-    //console.log(cushionNumber + ' ' + cushionTime + '' + values);
+    console.log(cushionNumber + ' ' + cushionTime + '' + values);
 
     current.save(function(error, data) {
       if (error) {
@@ -112,9 +114,11 @@ const server = net.createServer(function(socket) {
         // console.log(cushionNumber+" "+cushionTime);
       }
     });
+  });
 
-    console.log('full_data : ', full_data);
-  }); //end socket.on('close')
+  // socket.on('end', function() {
+  //   console.log('클라이언트 접속 종료');
+  // });
 });
 
 server.maxConnections = 10;

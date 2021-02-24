@@ -39,7 +39,7 @@ mongoose.connect(mongoUri, {
 const server = net.createServer(function(socket) {
   // console.log('connected with net');
 
-  var full_data = '';
+  var full_data = "";
 
   socket.on('data', function(data) {
     var buf = Buffer.from(data);
@@ -54,7 +54,6 @@ const server = net.createServer(function(socket) {
 
     let cushionTime = new Date(unixTime * 1000);
     let cushionNumber = Number(splitLines[1]);
-    console.log('id: ' + cushionNumber + ' length: ' + splitLines.length);
 
     let values = [];
 
@@ -97,7 +96,7 @@ const server = net.createServer(function(socket) {
     } // end else
 
     const current = new CurrentSchema({
-      idCM: cushionNumber,
+      cushion: cushionNumber,
       time: cushionTime,
       values
     });
@@ -113,8 +112,21 @@ const server = net.createServer(function(socket) {
       }
     });
 
-    console.log('full_data : ', full_data);
+    console.log("full_data : ",full_data)
   }); //end socket.on('close')
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 server.maxConnections = 10;

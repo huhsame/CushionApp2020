@@ -39,32 +39,37 @@ mongoose.connect(mongoUri, {
 const server = net.createServer(function(socket) {
   // console.log('connected with net');
 
-  var full_data = '';
+  socket.on('data', data => {
+    // console.log(data);
 
-  socket.on('data', function(data) {
-    var buf = Buffer.from(data);
-    var data_seg = buf.toString();
-    full_data += data_seg;
-  });
-
-  socket.on('close', function() {
-    let stringLine = String(full_data);
+    let stringLine = String(data);
+    // console.log(stringLine);
     let splitLines = stringLine.split(',');
     let unixTime = Number(splitLines[0]);
 
     let cushionTime = new Date(unixTime * 1000);
     let cushionNumber = Number(splitLines[1]);
-    console.log('id: ' + cushionNumber + ' length: ' + splitLines.length);
 
     let values = [];
+    console.log('id: ' + cushionNumber + ', length: ' + splitLines.length);
+
+    // console.log(stringLine);
+
+    // console.log(splitLines[436]);
+    //console.log(splitLines[437]);
+
+    // console.log('Data_length : ' + splitLines.length);
 
     if (cushionNumber > 1000) {
+      if (splitLines.length !== 437) return;
       for (let i = 2; i < 436; i++) {
         values.push(Number(splitLines[i]));
       }
       let v436 = splitLines[436].replace('\u0000', '');
       values.push(Number(v436));
     } else {
+      if (splitLines.length !== 38) return;
+
       for (let i = 2; i < 37; i++) {
         values.push(Number(splitLines[i]));
       }
@@ -90,7 +95,7 @@ const server = net.createServer(function(socket) {
           if (error) {
             console.log(error);
           } else {
-            //console.log(data);
+            console.log(data);
           }
         });
       } // End Beacon
@@ -102,19 +107,21 @@ const server = net.createServer(function(socket) {
       values
     });
 
-    //console.log(cushionNumber + ' ' + cushionTime + '' + values);
+    console.log(cushionNumber + ' ' + cushionTime + ' ' + values);
 
     current.save(function(error, data) {
       if (error) {
         console.log(error);
       } else {
-        // console.log(data);
+        console.log(data);
         // console.log(cushionNumber+" "+cushionTime);
       }
     });
+  });
 
-    console.log('full_data : ', full_data);
-  }); //end socket.on('close')
+  // socket.on('end', function() {
+  //   console.log('클라이언트 접속 종료');
+  // });
 });
 
 server.maxConnections = 10;
@@ -124,7 +131,7 @@ server.on('error', function(err) {
 });
 
 server.listen(port, async function() {
-  console.log('listening on fkjghl' + port);
+  console.log('listening on ' + port);
 });
 
 mongoose.connection.on('connected', () => {

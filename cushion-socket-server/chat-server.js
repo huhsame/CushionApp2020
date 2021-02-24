@@ -53,11 +53,11 @@ io.on('connection', socket => {
     console.log('user disconnected');
   });
 
-  socket.on('enter', ({ cushionId, userId }) => {
-    console.log(userId);
+  socket.on('enter', ({ client, userId }) => {
+    console.log('userId: ' + userId);
 
-    socket.join(cushionId, () => {
-      console.log(cushionId);
+    socket.join(client, () => {
+      console.log('환자 _id: ' + client);
       // console.log(user);
     });
   });

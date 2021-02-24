@@ -6,11 +6,12 @@ const ClientSchema = mongoose.model('Client');
 const router = express.Router();
 
 router.post('/createClient', async (req, res) => {
-  const { cushion, name, avatarUrl, age, sex } = req.body;
+  const { cushion, matt, name, avatarUrl, age, sex } = req.body;
 
   try {
     const client = new ClientSchema({
       cushion,
+      matt,
       name,
       avatarUrl,
       age,
@@ -31,10 +32,12 @@ router.get('/clientList', async (req, res) => {
     // console.log(list);
 
     const clientList = list.map(
-      ({ _id, cushion, name, avatarUrl, age, sex }) => {
+      ({ _id, cushion, matt, name, avatarUrl, age, sex }) => {
         return {
-          id: _id,
+          _id,
+          matt,
           cushion,
+          matt,
           name,
           avatarUrl,
           age,
@@ -44,6 +47,35 @@ router.get('/clientList', async (req, res) => {
     );
 
     res.send(clientList);
+  } catch (err) {
+    res.status(422).send(err.message);
+  }
+});
+
+router.get('/client/:_id', async (req, res) => {
+  const _id = req.params._id;
+
+  try {
+    const client = await ClientSchema.findOne({ _id });
+
+    console.log(client);
+
+    // const clientList = list.map(
+    //   ({ _id, cushion, matt, name, avatarUrl, age, sex }) => {
+    //     return {
+    //       _id,
+    //       matt,
+    //       cushion,
+    //       matt,
+    //       name,
+    //       avatarUrl,
+    //       age,
+    //       sex
+    //     };
+    //   }
+    // );
+
+    res.send(client);
   } catch (err) {
     res.status(422).send(err.message);
   }

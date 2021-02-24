@@ -18,8 +18,8 @@ const logSchema = new mongoose.Schema({
     name: String,
     avatar: String
   },
-  cushion: {
-    type: Number
+  client: {
+    type: String
   }
 });
 

@@ -16,26 +16,26 @@ const ClientSchema = mongoose.model('Client');
 // 디비에 있는 오브젝트 아이디어야 한다.
 // 굿나잇
 
-const saveLog = async ({ cushionId, data }) => {
-  console.log(cushionId, data);
-  const log = new LogSchema({
-    text: data.text,
-    createdAt: data.createdAt,
-    user: data.user._id,
-    cushion: cushionId
-  });
+// const saveLog = async ({ cushionId, data }) => {
+//   console.log(cushionId, data);
+//   const log = new LogSchema({
+//     text: data.text,
+//     createdAt: data.createdAt,
+//     user: data.user._id,
+//     cushion: cushionId
+//   });
 
-  await log.save(function(err, data) {
-    if (err) {
-      console.log(error);
-    } else {
-      console.log('log Saved..');
-    }
-  });
-  console.log('savelog', log._id);
+//   await log.save(function(err, data) {
+//     if (err) {
+//       console.log(error);
+//     } else {
+//       console.log('log Saved..');
+//     }
+//   });
+//   console.log('savelog', log._id);
 
-  return log._id;
-};
+//   return log._id;
+// };
 
 const getUser = async ({ socketId, userId, users }) => {
   // 있으면 가져와
@@ -75,13 +75,21 @@ const createMessage = ({ logId, user, text }) => {
 };
 
 const handleMessage = (socket, users) => {
-  socket.on('message', async ({ cushionId, data }) => {
+  socket.on('message', async ({ client, data }) => {
+    console.log(client);
     console.log('recived on server');
 
-    const schema = data;
-    schema.cushion = cushionId;
-
-    const log = new LogSchema(schema);
+    const log = new LogSchema({
+      text: data.text,
+      createdAt: data.createdAt,
+      alert: data.alert,
+      user: {
+        _id: data.user._id,
+        name: data.user.name,
+        avatar: data.user.avatar
+      },
+      client: client
+    });
 
     await log.save(function(err, data) {
       if (err) {
@@ -90,28 +98,10 @@ const handleMessage = (socket, users) => {
         console.log('log Saved..');
       }
     });
-    console.log('savelog', log._id);
 
-    // const logId = saveLog({ cushionId, data });
-    // console.log('handle', logId);
-    // broadcast
-    console.log(data);
-
-    // const user = await getUser({
-    //   socketId: socket.id,
-    //   id: data.user._id,
-    //   users
-    // });
-    // console.log(user);
-    // const newData = createMessage({
-    //   logId,
-    //   user: { id: data.user._id },
-    //   text: data.text
-    // });
-
-    socket.to(cushionId).broadcast.emit('message', { cushionId, data });
+    socket.to(client).broadcast.emit('message', { client, data });
     // io.to(cushionId).emit('message', { cushionId, message });
   });
 };
 
-module.exports = { createMessage, handleMessage };
+module.exports = { handleMessage };

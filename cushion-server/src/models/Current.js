@@ -5,7 +5,7 @@ const CushionSchema = mongoose.model('Cushion');
 const currentSchema = new mongoose.Schema({
   time: Date,
   values: [Number],
-  cushion: Number
+  idCM: Number
 });
 mongoose.model('Current', currentSchema);
 
